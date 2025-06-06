@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import config from "./config/config.mjs"
 
  mongoose.connection.on("connected", () => {
- console.log("Mongoose connected to database.");
+ console.log("Mongoose connected to database!");
   });
   mongoose.connection.on("error",(err) => {
     console.error("Mongoose conecction error:", err);
