@@ -8,6 +8,10 @@ import GoogleStrategy from 'passport-google-oauth20'
 import MongoStore from 'connect-mongo';
 import LocalStrategy from 'passport-local'
 import DB from './DB.mjs'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+
+
 const app = express();
 
 DB()
@@ -24,11 +28,14 @@ passport.deserializeUser(function(obj, done) {
 app.use(session({
   secret: "secret",
   resave: false,
-  saveUnintialized: true,
+  saveUninitialized: true,
   store: MongoStore.create({ mongoUrl: config.MONGO_URI})
 }))
 
-
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login');
+}
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -40,8 +47,7 @@ passport.use(new LocalStrategy(
 
 
 passport.use( new GoogleStrategy({
-  clientID: config.GOOGLE_CLIENT_ID,
-  clientSecret:config.GOOGLE_CLIENT_SECRET,
+  clientID: config.GOOGLE_CLIENT_ID, clientSecret:config.GOOGLE_CLIENT_SECRET,
   callbackURL: "/auth/google/callback",
   passReqToCallback: true
  },
@@ -52,8 +58,25 @@ passport.use( new GoogleStrategy({
    }
 ));
 
-app.get('/', (req, res) =>{
-  res.send('Hello World')
+app.set('views', './views');
+app.set('view engine', 'ejs');
+app.use( express.static( '/public'));
+app.use( cookieParser()); 
+app.use( bodyParser.json());
+app.use( bodyParser.urlencoded({
+	extended: true
+}));
+
+app.get('/', function(req, res){
+  res.render('index', { user: req.user });
+});
+
+app.get('/account', ensureAuthenticated, function(req, res){
+  res.render('account', { user: req.user });
+});
+
+app.get('/login', function(req, res){
+  res.render('login', { user: req.user });
 });
 
 app.get('/auth/google',
@@ -63,9 +86,16 @@ app.get('/auth/google',
 
 app.get ('auth/google/callback',
   passport.authenticate( 'google', {
-    successRedirect: '/auth/google/success',
-    failureRedirect: '/auth/google/failure'
+    successRedirect: '/',
+    failureRedirect: '/login'
  }));
+
+app.get('/logout', function(req, res, next){
+  req.logout(function(err){
+    if(err) return next(err);
+  res.redirect('/');
+  })
+});
 
 const PORT = config.PORT || 3030;
 app.listen (PORT, () => {
