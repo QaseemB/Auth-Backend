@@ -10,20 +10,14 @@ import LocalStrategy from 'passport-local'
 import DB from './DB.mjs'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
+import ensureAuthenticated from './middleware/ensureAuthentication.mjs';
+
 
 
 const app = express();
 
 DB()
 
-
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
-
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
-});
 
 app.use(session({
   secret: "secret",
@@ -32,31 +26,10 @@ app.use(session({
   store: MongoStore.create({ mongoUrl: config.MONGO_URI})
 }))
 
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login');
-}
+
 
 app.use(passport.initialize())
 app.use(passport.session())
-
-passport.use(new LocalStrategy(
-  (username, password, done)=> {
-  }
-));
-
-
-passport.use( new GoogleStrategy({
-  clientID: config.GOOGLE_CLIENT_ID, clientSecret:config.GOOGLE_CLIENT_SECRET,
-  callbackURL: "/auth/google/callback",
-  passReqToCallback: true
- },
-  function(request, accessToken, refreshToken, profile, done) {
-    User.findOrCreate({ googleID: profile.id}, function (err,user){
-      return done(err,user);
-    });
-   }
-));
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
