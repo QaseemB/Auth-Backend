@@ -32,7 +32,7 @@ const register = async (req,res) => {
 
   }
 }; 
- let login = async (req, res) => {
+ const login = async (req, res) => {
     const {username,password} = req.body;
   try {
     let user = await USERS.findOne({username});
@@ -44,6 +44,8 @@ const register = async (req,res) => {
       if(!isMatch) {
         return res.status(400).json({msg: 'invalid credentials'});
       }
+    const secretKey = config.Jwt_SecretKey
+    
     const payload = { user: user._id};
     
     const token = jwt.sign(payload,secretKey,{expiresIn: '1h'});
@@ -57,19 +59,25 @@ const register = async (req,res) => {
 
  const logout = (req,res) => {
    try {
-     res.cookie(;token", "")
+     res.cookie("token", "")
      console.log('Token cleared from cookies.')
-     res.jsson({msg: 'Logged out succssfully'}).status(200);
+     res.status(200).json({msg: 'Logged out succssfully'})
    }catch(e){
      console.error('Error during logout:', err);
      res.status(500).send('Server Error');
    }
  };
 
-cons checkAuth = async (req,res) => {
+const checkAuth = async (req,res) => {
   try {
     if (req.user) {
-      res.json({user: id: req.user._id, name: req.username, username: rew.user.username} );
+      res.json({user:{
+        id: req.user._id, 
+        name: req.user.name, 
+        username: req.user.username
+      } 
+    });
+      
   }else {
     res.status(401).json({msg: 'Not authenticated'});
   }
@@ -79,4 +87,6 @@ cons checkAuth = async (req,res) => {
   }
 };
 
-
+export {
+  checkAuth, logout, register, login
+}

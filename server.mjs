@@ -1,12 +1,8 @@
 import express from 'express';
-import mongoose from 'mongoose'
-import dotenv from 'dotenv';
 import config from './config/config.mjs'; 
 import session from 'express-session';
-import passport from 'passport';
-import GoogleStrategy from 'passport-google-oauth20'
+import passport from './config/passport.mjs';
 import MongoStore from 'connect-mongo';
-import LocalStrategy from 'passport-local'
 import DB from './DB.mjs'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
@@ -20,7 +16,7 @@ DB()
 
 
 app.use(session({
-  secret: "secret",
+  secret: config.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   store: MongoStore.create({ mongoUrl: config.MONGO_URI})
@@ -54,21 +50,36 @@ app.get('/login', function(req, res){
 
 app.get('/auth/google',
   passport.authenticate('google', {scope:
-    ['email','profile'] }
+    ['email','profile'] },
   ));
 
-app.get ('auth/google/callback',
-  passport.authenticate( 'google', {
-    successRedirect: '/',
-    failureRedirect: '/login'
- }));
+app.get('/auth/google/callback',
+  passport.authenticate( 'google', {  failureRedirect: '/login'}),
+  function(req,res){
+    res.redirect('/');
+  }
+);
+
+app.get(
+  '/auth/spotify/callback',
+  passport.authenticate('spotify', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+  }
+);
+
+app.get(
+  '/auth/spotify',
+  passport.authenticate('spotify', {
+    scope: ['user-read-email', 'user-read-private'],
+    showDialog: true
+  })
+);
 
 app.get('/logout', function(req, res, next){
-  req.logout(function(err){
-    if(err) return next(err);
+  req.logout();
   res.redirect('/');
-  })
-});
+})
 
 const PORT = config.PORT || 3030;
 app.listen (PORT, () => {

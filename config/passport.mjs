@@ -2,10 +2,12 @@ import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import config from './config.mjs';
 import USERS from '../models/user.mjs';
+import {Strategy as SpotifyStrategy} from 'passport-spotify';
 
 passport.use( new GoogleStrategy({
-  clientID: config.GOOGLE_CLIENT_ID, clientSecret:config.GOOGLE_CLIENT_SECRET,
-  callbackURL: "/auth/google/callback",
+  clientID: config.GOOGLE_CLIENT_ID,
+  clientSecret:config.GOOGLE_CLIENT_SECRET,
+  callbackURL: "https://abb7-2600-4041-559d-5300-9120-e50d-728f-3ee2.ngrok-free.app/auth/google/callback",
   passReqToCallback: true
  },
   async ( accessToken, refreshToken, profile, done) => {
@@ -20,16 +22,35 @@ passport.use( new GoogleStrategy({
     }
       return done(null, user);
     }catch (e) {
-      return done(e,user);
+      return done(e,null);
     }
    }));
+
+passport.use(
+  new SpotifyStrategy(
+    {
+      clientID: config.SPOTIFY_CLIENT_ID, 
+      clientSecret: config.SPOTIFY_CLIENT_SECRET,
+      callbackURL: 'https://abb7-2600-4041-559d-5300-9120-e50d-728f-3ee2.ngrok-free.app/auth/spotify/callback'
+    },
+    async (accessToken, refreshToken, expires_in, client, done)=> {
+      try{
+      let user = USERS.findOne({clientID: client._id});
+      if (!user){
+        user = await USERS.create({
+          clientID: client._id,
+          name:client.name,
+          email:client.email,
+        });
+      }
+        return done(null,user);
+      }catch(e){
+        done(e,null);
+      }
+    }));
+ 
 passport.serializeUser(async (id,done) =>{
-  try {
-    const user = await USERS.findById(id);
-    dont(null, user);
-  }catch(e){
-    done(e,null);
-  }
+    done(null,user._id);
 });
 
 passport.deserializeUser(async (id,done)=> {
@@ -39,6 +60,6 @@ passport.deserializeUser(async (id,done)=> {
   }catch(e){
   done(err,null);
 }
-});
+});       
 
 export default passport 

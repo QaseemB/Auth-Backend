@@ -20,10 +20,15 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
   googleID: {
-    type: string,
+    type: String,
     unique: true,
     sparse: true,
-  }
+  },
+  clientID:{
+    type: String,
+    unique: true,
+    sparse: true,
+  },
 
 });
 
