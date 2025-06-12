@@ -12,6 +12,6 @@ export const authenticateUser = async (username, password) => {
   if (!isMatch) throw new Error('invalid credentials');
 
   const payload = {user._id};
-  const token = jwt.sign(payload, config.jwt_secretKey, {expiresIn; '1h'})
+  const token = jwt.sign(payload, config.Jwt_SecretKey, {expiresIn; '1h'})
 
   return {token, user}

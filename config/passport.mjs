@@ -55,7 +55,7 @@ passport.use(
       clientID: config.SOUNDCLOUD_CLIETN_ID,
       clentSecret: config.SOUNDCLOUD_CLIENT_SECRET,
       callbackURL:' https://abb7-2600-4041-559d-5300-9120-e50d-728f-3ee2.ngrok-free.app/auth/soundcloud.callback'
-    }
+    },
     async ( accessToken, rereshToken,expires_in, client, done) => {
       try{
         let user = USERS.findOne({clientID: client._id});
