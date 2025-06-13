@@ -2,9 +2,8 @@ import config from '../config/config.mjs'
 import USERS from '../models/user.mjs';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import authenicateUser, { authenticateUser } from '../services/authServices.mjs'
+import { authenticateUser } from '../services/authServices.mjs'
 
-const {token,user} = authenticateUser
 
 const register = async (req,res) => {
   const {username,password,email,name} = req.body;
@@ -21,7 +20,6 @@ const register = async (req,res) => {
 
     await user.save();
 
-    const secretKey = config.Jwt_SecretKey
 
     const {token} = await authenticateUser(username,password)
     //const payload = {user: user._id, username: user.username};
