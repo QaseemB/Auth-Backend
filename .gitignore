@@ -1,5 +1,5 @@
-.swp
-.env
+*.swp
+*.env
 
 
 #dependecies 

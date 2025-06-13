@@ -4,14 +4,29 @@ import jwt from 'jsonwebtoken';
 import config from '../config/config.mjs'
 
 
-export const authenticateUser = async (username, password) => {
-  const user = USERS.findOne({username});
-  if (!user) throw new Error ('invalid credentials');
+  export const generateToken = (user) => {
+      const payload = {
+        user:{ 
+          id: user._id, 
+          username: user.username, 
+          name: user.name, 
+          email: user.email}
+        };
+      
+        return jwt.sign(payload, config.Jwt_SecretKey, {expiresIn: '1h'})
+      };
+      
+  
+  export const authenticateUser = async (username, password) => {
+      const user = await USERS.findOne({username});
+      if (!user) throw new Error ('invalid credentials');
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error('invalid credentials');
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) throw new Error('invalid credentials');
+      
+      const token = generateToken(user)
+      
+      return { token, user}
 
-  const payload = {user._id};
-  const token = jwt.sign(payload, config.jwt_secretKey, {expiresIn; '1h'})
 
-  return {token, user}
+

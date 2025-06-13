@@ -21,9 +21,9 @@ passport.use( new GoogleStrategy({
         email: profile.emails[0].value
       });
     }
-      return done(null, user);
+      return cb(null, user);
     }catch (e) {
-      return done(e,null);
+      return cb(e,null);
     }
    }));
 
@@ -34,14 +34,14 @@ passport.use(
       clientSecret: config.SPOTIFY_CLIENT_SECRET,
       callbackURL: 'https://abb7-2600-4041-559d-5300-9120-e50d-728f-3ee2.ngrok-free.app/auth/spotify/callback'
     },
-    async (accessToken, refreshToken, expires_in, client, done)=> {
+    async (accessToken, refreshToken, expires_in, profile, done)=> {
       try{
-      let user = USERS.findOne({clientID: client._id});
+      let user = USERS.findOne({spotifyID: profile._id});
       if (!user){
         user = await USERS.create({
-          clientID: client._id,
-          name:client.name,
-          email:client.email,
+          spotifyID: profile._id,
+          name:profile.name,
+          email:profile.email,
         });
       }
         return done(null,user);
@@ -56,14 +56,14 @@ passport.use(
       clentSecret: config.SOUNDCLOUD_CLIENT_SECRET,
       callbackURL:' https://abb7-2600-4041-559d-5300-9120-e50d-728f-3ee2.ngrok-free.app/auth/soundcloud.callback'
     }
-    async ( accessToken, rereshToken,expires_in, client, done) => {
+    async ( accessToken, rereshToken,expires_in, profile, done) => {
       try{
-        let user = USERS.findOne({clientID: client._id});
+        let user = USERS.findOne({soundcloudID: profile._id});
         if (!user) {
           user await USERS.create({
-            clientID: client._id,
-            name: client.name,
-            email: client.email,
+            soundcloudID: profile._id,
+            name: profile.name,
+            email: profile.email,
           });
         }
           retrun done(null, user);
