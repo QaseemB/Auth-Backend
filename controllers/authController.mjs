@@ -2,6 +2,7 @@ import config from '../config/config.mjs'
 import USERS from '../models/user.mjs';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { authenticateUser } from '../services/authServices.mjs'
 
 
 const register = async (req,res) => {
@@ -11,7 +12,7 @@ const register = async (req,res) => {
     let user = await USERS.findOne({$or: [{username}, {email}]});
     if (user)
       return res.status(400).json({msg:'Username or Email already have been registered to this application'})
-  user = new USERS({username,password,email, name});
+    user = new USERS({username,password,email, name});
    
     const salt = await bcrypt.genSalt(10);
    
@@ -19,11 +20,11 @@ const register = async (req,res) => {
 
     await user.save();
 
-    const secretKey = config.Jwt_SecretKey
 
-    const payload = {user: user._id, username: user.username};
+    const {token} = await authenticateUser(username,password)
+    //const payload = {user: user._id, username: user.username};
 
-    const token = jwt.sign(payload,secretKey,{expiresIn: '1h'});
+    //const token = jwt.sign(payload,secretKey,{expiresIn: '1h'});
 
     return res.status(201).json({token})
   }catch(e){
