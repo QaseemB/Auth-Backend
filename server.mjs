@@ -76,6 +76,19 @@ app.get(
   })
 );
 
+app.get('/auth/soundcloud',
+  passport.authenticate{'soundcloud',{
+    scope: [],
+  }
+);
+
+app.get('/auth/soundcloud/callback',
+  passport.authenticate('soundcloud',{failureRedirect: '/login'}),
+  function(req,res){
+    res.redirect('/');
+  }
+);
+
 app.get('/logout', function(req, res, next){
   req.logout();
   res.redirect('/');
