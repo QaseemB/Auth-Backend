@@ -77,10 +77,10 @@ app.get(
 );
 
 app.get('/auth/soundcloud',
-  passport.authenticate{'soundcloud',{
-    scope: [],
+  passport.authenticate('soundcloud',{
+    scope: ['non-expiring'],
   }
-);
+));
 
 app.get('/auth/soundcloud/callback',
   passport.authenticate('soundcloud',{failureRedirect: '/login'}),
