@@ -71,7 +71,7 @@ app.get(
 app.get(
   '/auth/spotify',
   passport.authenticate('spotify', {
-    scope: ['user-read-email', 'user-read-private'],
+    scope: ['user-read-email', 'user-read-private','user-library-read'],
     showDialog: true
   })
 );

@@ -16,11 +16,17 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     select: false,
-    required: true,
+    validate: {
+      validator: function (value) {
+        const usingOAuth = this.googleID || this.spotifyID || this.soundcloudID;
+        if (usingOAuth) return true;
+        return !!value;
+      },
+      message: "password is required unless logged in via Google,Spotify, or soundcloud",
+    },
   },
   email: {
     type: String,
-    required: true,
     unique: true,
     trim: true,
     lowercase: true,

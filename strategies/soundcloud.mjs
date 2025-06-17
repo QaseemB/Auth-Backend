@@ -14,11 +14,12 @@ const SoundCloudOAuthStrategy =  new Strategy(
     async ( accessToken, rereshToken,expires_in, profile, done) => {
       console.log('soundcloud profile:' , profile);
       try{
-        let user = await USERS.findOne({soundcloudID: profile._id});
+        let user = await USERS.findOne({soundcloudID: profile.id});
         if (!user) {
             user = await USERS.create({
             soundcloudID: profile.id,
-            name: profile.username,
+            name: profile.displayName,
+            username: profile.usename,
             avatar: profile.avatar_url,
             permalinkURL: profile.permalin_url,
           });

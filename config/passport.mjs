@@ -8,13 +8,9 @@ passport.use(GoogleOAuthStrategy)
 passport.use(SpotifyOAuthStrategy)
 passport.use(SoundCloudOAuthStrategy)
 
-passport.serializeUser(async (id,done) =>{
-    try{
-      const user = await USERS.findById(id)
-        done(null,user);
-    }catch(e){
-        done(e,null);
-    }
+passport.serializeUser((user,done) =>{
+  console.log("Serializing user:", user);
+        done(null,user._id);
   });
 
 passport.deserializeUser(async (id,done)=> {
@@ -22,7 +18,7 @@ passport.deserializeUser(async (id,done)=> {
       const user = await USERS.findById(id);
       done(null,user);
     }catch(e){
-      done(err,null);
+      done(e,null);
     }
   });       
 

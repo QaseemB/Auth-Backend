@@ -22,10 +22,11 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.17.0",
     "mongoose": "^8.15.1",
+    "oauth": "github:QaseemB/node-oauth",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
-    "passport-soundcloud": "^0.2.0",
+    "passport-soundcloud": "github:Qaseemb/passport-soundcloud",
     "passport-spotify": "^2.0.0"
   },
   "devDependencies": {
