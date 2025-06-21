@@ -18,9 +18,9 @@ const config = {
 
   Jwt_SecretKey: process.env.Jwt_SecretKey,
   SESSION_SECRET: process.env.SESSION_SECRET,
-  SOUNDCLOUD_CLIENT_ID: process.env.SOUNDCLOUD_CLIENT_ID,
-  SOUNDCLOUD_CLIENT_SECRET: process.env.SOUNDCLOUD_CLIENT_SECRET
-}
+
+  NODE_ENV: process.env.NODE_ENV,
+  }
 
 
 export default config;

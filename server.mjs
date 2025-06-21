@@ -14,12 +14,23 @@ const app = express();
 
 DB()
 
+const store = MongoStore.create({
+  mongoUrl: config.MONGO_URI,
+  ttl: 14 * 24 * 60 * 60,
+  autoRemove: 'native',
+  });
 
 app.use(session({
   secret: config.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  store: MongoStore.create({ mongoUrl: config.MONGO_URI})
+  store: store,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    secure: config.NODE_ENV === 'production',
+    sameSite: 'lax',
+    httpOnly: true,
+  }
 }))
 
 
