@@ -1,5 +1,13 @@
 import mongoose from 'mongoose';
 
+const providerSchema = new mongoose.Schema({
+  providerID: { type: String, required: true, unique: true, enum: ['google', 'soundcloud', 'spotify']},
+  accesToken: String,
+  refreshToken: String,
+}, {_id: false});
+
+
+
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -25,24 +33,8 @@ const userSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  googleID: {
-    type: String,
-    unique: true,
-    sparse: true,
-  },
-  spotifyID:{
-    type: String,
-    unique: true,
-    sparse: true,
-  },
-  soundcloudID:{
-    type: String,
-    unique: true,
-    sparse: true,
-  },
-
-}, {timestamps: true, versionKey: false },
-  
+  provider: {type: [providerSchema], default: []},
+ }, {timestamps: true, versionKey: false },
 );
 
 function scrub(_, ret) {
