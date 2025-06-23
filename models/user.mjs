@@ -47,16 +47,14 @@ const userSchema = new mongoose.Schema({
     sparse: true,
   },
 
-  avatar: string,
-  country: string,
+  avatar: String,
+  country: String,
   profileURLs: {
-    spotify: string,
-    soundcloud: string,
-  
-
-}, {timestamps: true, versionKey: false },
-  
-);
+    spotify: String,
+    soundcloud: String,
+  },
+},
+  {timestamps: true, versionKey: false });
 
 function scrub(_, ret) {
   delete ret.password;
