@@ -47,6 +47,13 @@ const userSchema = new mongoose.Schema({
     sparse: true,
   },
 
+  avatar: string,
+  country: string,
+  profileURLs: {
+    spotify: string,
+    soundcloud: string,
+  
+
 }, {timestamps: true, versionKey: false },
   
 );

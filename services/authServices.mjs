@@ -28,10 +28,4 @@ import config from '../config/config.mjs'
       
       return { token, user}
 
-
-<<<<<<< HEAD
-  const payload = {user._id};
-  const token = jwt.sign(payload, config.Jwt_SecretKey, {expiresIn; '1h'})
-=======
->>>>>>> 360b63760e5bf5cb16bd9740c4a51d0122469f0c
-
+  };
