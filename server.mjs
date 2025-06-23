@@ -3,7 +3,7 @@ import config from './config/config.mjs';
 import session from 'express-session';
 import passport from './config/passport.mjs';
 import MongoStore from 'connect-mongo';
-import DB from './DB.mjs'
+import{DB as MongoDB}  from './mongoConnect.mjs'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import ensureAuthenticated from './middleware/ensureAuthentication.mjs';
@@ -12,7 +12,7 @@ import ensureAuthenticated from './middleware/ensureAuthentication.mjs';
 
 const app = express();
 
-DB()
+MongoDB()
 
 const store = MongoStore.create({
   mongoUrl: config.MONGO_URI,

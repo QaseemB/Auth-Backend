@@ -11,7 +11,7 @@ import config from "./config/config.mjs"
     console.log("Mongoose disconnected.");
   });
 
-const DB = async () => {
+export const DB = async () => {
   try {
      await mongoose.connect(config.MONGO_URI,{
        serverSelectionTimeoutMS: 3000,
@@ -24,4 +24,3 @@ const DB = async () => {
    }
 };
 
-export default DB;
